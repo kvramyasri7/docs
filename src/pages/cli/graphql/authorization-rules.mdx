@@ -106,6 +106,21 @@ type Todo @model @auth(rules: [{ allow: owner, ownerField: "author" }]) {
 }
 ```
 
+<Callout warning>
+
+  **By default, owners have full permissions on their records!**
+
+  Unless [field-level authorization](#field-level-authorization-rules) is enabled, although an owner field is automatically generated, the 'owner' of a record has full update/delete permissions, which can include updating the owner to a nonexistent or different user. If this is not desirable behavior, field-level authorization may be configured on the owner field itself.
+
+  ```graphql
+  type Todo @model @auth(rules: [{ allow: owner }]) {
+    id: ID!
+    description: String
+    owner: String @auth(rules: [{ allow: owner, operations: [read, delete] }])
+  }
+  ```
+</Callout>
+
 By default, only one user can be an owner of a record. If you want to grant a set of users access to a record, you can override the `ownerField` to a list of owners. Use this if you want a dynamic set of users to have access to a record.
 
 ```graphql
